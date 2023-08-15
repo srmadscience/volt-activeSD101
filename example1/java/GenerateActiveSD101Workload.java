@@ -34,8 +34,6 @@ public class GenerateActiveSD101Workload {
             System.exit(1);
         }
 
-        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
         final int maxUserid = 1000;
         final int maxSessionId = 1000000;
         final int maxValue = 100;

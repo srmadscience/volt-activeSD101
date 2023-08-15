@@ -10,8 +10,8 @@ public class EventMessage {
     int value;
     Date eventTime;
 
-    public EventMessage(int userid, int sessionId, Date eventTime,  int value) {
-        
+    public EventMessage(int userid, int sessionId, Date eventTime, int value) {
+
         super();
         this.userid = userid;
         this.sessionId = sessionId;
@@ -35,7 +35,7 @@ public class EventMessage {
     }
 
     public String toCsvString() {
-        
+
         StringBuilder builder = new StringBuilder();
         builder.append(userid);
         builder.append(",");
@@ -43,9 +43,17 @@ public class EventMessage {
         builder.append(",");
         builder.append(sdfDate.format(eventTime));
         builder.append(",");
-       builder.append(value);
- 
+        builder.append(value);
+
         return builder.toString();
+    }
+
+   
+    /**
+     * @return the userid
+     */
+    public int getUserid() {
+        return userid;
     }
 
 }
