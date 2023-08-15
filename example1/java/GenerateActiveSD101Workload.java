@@ -52,18 +52,14 @@ public class GenerateActiveSD101Workload {
 
             for (int i = 0; i < messagePerSecond; i++) {
 
-                Date now = new Date();
-                String strDate = sdfDate.format(now);
-
-                int thisUserId = r.nextInt(maxUserid);
-                int thisSessionId = r.nextInt(maxSessionId);
-                int thisAmount = r.nextInt(maxValue);
                 
-                printEvent(thisUserId, thisSessionId, strDate, thisAmount);
+                EventMessage em = new EventMessage(r.nextInt(maxUserid),r.nextInt(maxSessionId),new Date(),r.nextInt(maxValue));
+
+                System.out.println(em.toCsvString());
 
                 // Generate duplicate events every now and then...
                 if (r.nextInt(dupFrequency) == 0) {
-                    printEvent(thisUserId, thisSessionId, strDate, thisAmount);
+                    System.out.println(em.toCsvString());
 
                 }
             }
@@ -77,9 +73,5 @@ public class GenerateActiveSD101Workload {
 
     }
 
-    private static void printEvent(int thisUserId, int thisSessionId, String strDate, int thisAmount) {
-        System.out.println(thisUserId + "," + thisSessionId + "," + strDate + "," + thisAmount);
-
-    }
-
+    
 }
