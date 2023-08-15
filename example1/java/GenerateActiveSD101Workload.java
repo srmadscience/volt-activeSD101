@@ -37,7 +37,7 @@ public class GenerateActiveSD101Workload {
         final int maxUserid = 1000;
         final int maxSessionId = 1000000;
         final int maxValue = 100;
-        final int dupFrequency = 2;
+        final int dupFrequency = 5;
 
         final int durationInSeconds = Integer.parseInt(args[0]);
         final int messagePerSecond = Integer.parseInt(args[1]);
@@ -53,11 +53,11 @@ public class GenerateActiveSD101Workload {
                 
                 EventMessage em = new EventMessage(r.nextInt(maxUserid),r.nextInt(maxSessionId),new Date(),r.nextInt(maxValue));
 
-                System.out.println(em.toCsvString());
+                System.out.println(em.toKafkaCsvString());
 
                 // Generate duplicate events every now and then...
                 if (r.nextInt(dupFrequency) == 0) {
-                    System.out.println(em.toCsvString());
+                    System.out.println(em.toKafkaCsvString());
 
                 }
             }

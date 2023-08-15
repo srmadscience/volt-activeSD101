@@ -34,9 +34,14 @@ public class EventMessage {
 
     }
 
-    public String toCsvString() {
+    /**
+     * @return this object in a kafka friendly format, using userid as a key and : as a key.separator
+     */
+    public String toKafkaCsvString() {
 
         StringBuilder builder = new StringBuilder();
+        builder.append(userid);
+        builder.append(":");
         builder.append(userid);
         builder.append(",");
         builder.append(sessionId);
@@ -56,4 +61,5 @@ public class EventMessage {
         return userid;
     }
 
+   
 }
