@@ -28,33 +28,48 @@ import org.voltdb.SQLStmt;
 import org.voltdb.VoltProcedure;
 import org.voltdb.VoltTable;
 
-public class ForwardUniqueEvents extends VoltProcedure {
+public class SummarizeUniqueEvents extends VoltProcedure {
 
   // @formatter:off
 
     public static final SQLStmt getEvent = new SQLStmt("SELECT * FROM events_pk WHERE user_id = ? AND session_id = ?;");
+    
+    public static final SQLStmt getTotals = new SQLStmt("SELECT total_value FROM events_totals WHERE user_id = ? AND session_id = ?;");
 
     public static final SQLStmt recordEvent = new SQLStmt("INSERT INTO events_pk (user_id,session_id,insert_date) VALUES (?,?, ?);");
 
-    public static final SQLStmt forwardToKafka = new SQLStmt("INSERT INTO unique_events (user_id,session_id,insert_date) VALUES (?,?,?);");
+    public static final SQLStmt upsertTotals = new SQLStmt("UPSERT INTO events_totals (user_id,session_id,last_written,event_value) VALUES (?,?,?,?);");
+
+    public static final SQLStmt forwardToKafka = new SQLStmt("INSERT INTO unique_events (user_id,session_id,insert_date,event_value) VALUES (?,?,?,?);");
 
 
     // @formatter:on
 
-    public VoltTable[] run(long userId, long sessionId, Date eventDate, long value) throws VoltAbortException {
+    public VoltTable[] run(long userId, long sessionId, Date eventDate, long eventValue) throws VoltAbortException {
 
         voltQueueSQL(getEvent, userId, sessionId);
+        voltQueueSQL(getTotals, userId, sessionId);
 
         VoltTable[] eventRecord = voltExecuteSQL();
+        
+        long updatedEventValue = eventValue;
 
         // Sanity check: Does this session exist?
         if (!eventRecord[0].advanceRow()) {
             return new VoltTable[0];
         }
 
-        voltQueueSQL(recordEvent, userId, sessionId, eventDate,value);
-        voltQueueSQL(forwardToKafka, userId, sessionId, eventDate,value);
+        if (eventRecord[1].advanceRow()) {
+            updatedEventValue += eventRecord[1].getLong("total_value");
+        }
 
+        voltQueueSQL(recordEvent, userId, sessionId, eventDate);
+        
+        if (updatedEventValue > 100) {
+            voltQueueSQL(upsertTotals, userId, sessionId, eventDate,0);
+            voltQueueSQL(forwardToKafka, userId, sessionId, eventDate,updatedEventValue);
+        }
+ 
         return voltExecuteSQL(true);
 
     }
