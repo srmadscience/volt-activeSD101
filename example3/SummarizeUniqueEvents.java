@@ -1,5 +1,5 @@
 
-/* This file is part of VoltDB.
+/* This file is part of Volt Active Data.
  * Copyright (C) 2008-2023 Volt Active Data Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -68,6 +68,8 @@ public class SummarizeUniqueEvents extends VoltProcedure {
         if (updatedEventValue > 100) {
             voltQueueSQL(upsertTotals, userId, sessionId, eventDate,0);
             voltQueueSQL(forwardToKafka, userId, sessionId, eventDate,updatedEventValue);
+        } else {
+            voltQueueSQL(upsertTotals, userId, sessionId, eventDate,updatedEventValue);
         }
  
         return voltExecuteSQL(true);

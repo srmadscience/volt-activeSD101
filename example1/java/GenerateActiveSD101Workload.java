@@ -1,4 +1,3 @@
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
@@ -50,7 +49,7 @@ public class GenerateActiveSD101Workload {
 
             for (int i = 0; i < messagePerSecond; i++) {
 
-                
+
                 EventMessage em = new EventMessage(r.nextInt(maxUserid),r.nextInt(maxSessionId),new Date(),r.nextInt(maxValue));
 
                 System.out.println(em.toKafkaCsvString());
@@ -71,5 +70,5 @@ public class GenerateActiveSD101Workload {
 
     }
 
-    
+
 }
