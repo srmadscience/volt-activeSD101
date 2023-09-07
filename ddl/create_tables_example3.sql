@@ -44,6 +44,6 @@ LOAD CLASSES ../jars/voltdb-example1.jar;
 --
 CREATE PROCEDURE  
    PARTITION ON TABLE events_pk COLUMN userid
-   FROM CLASS ForwardUniqueEvents;
+   FROM CLASS SummarizeUniqueEvents;
 
 

@@ -1,5 +1,5 @@
 
-/* This file is part of VoltDB.
+/* This file is part of Volt Active Data.
  * Copyright (C) 2008-2023 Volt Active Data Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
