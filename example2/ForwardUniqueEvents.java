@@ -36,14 +36,14 @@ public class ForwardUniqueEvents extends VoltProcedure {
 
     public static final SQLStmt recordEvent = new SQLStmt("INSERT INTO events_pk (user_id,session_id,insert_date) VALUES (?,?, ?);");
 
-    public static final SQLStmt forwardToKafka = new SQLStmt("INSERT INTO unique_events (user_id,session_id,insert_date) VALUES (?,?,?);");
+    public static final SQLStmt forwardToKafka = new SQLStmt("INSERT INTO unique_events (user_id,session_id,insert_date, event_value) VALUES (?,?,?,?);");
 
 
     // @formatter:on
 
-    public VoltTable[] run(long userId, long sessionId, Date eventDate, long value) throws VoltAbortException {
+    public VoltTable[] run(long user_id, long sessionId, Date eventDate, long value) throws VoltAbortException {
 
-        voltQueueSQL(getEvent, userId, sessionId);
+        voltQueueSQL(getEvent, user_id, sessionId);
 
         VoltTable[] eventRecord = voltExecuteSQL();
 
@@ -52,8 +52,8 @@ public class ForwardUniqueEvents extends VoltProcedure {
             return new VoltTable[0];
         }
 
-        voltQueueSQL(recordEvent, userId, sessionId, eventDate,value);
-        voltQueueSQL(forwardToKafka, userId, sessionId, eventDate,value);
+        voltQueueSQL(recordEvent, user_id, sessionId, eventDate,value);
+        voltQueueSQL(forwardToKafka, user_id, sessionId, eventDate,value);
 
         return voltExecuteSQL(true);
 

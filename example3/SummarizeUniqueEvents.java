@@ -28,25 +28,32 @@ import org.voltdb.SQLStmt;
 import org.voltdb.VoltProcedure;
 import org.voltdb.VoltTable;
 
+
 public class SummarizeUniqueEvents extends VoltProcedure {
 
   // @formatter:off
 
     public static final SQLStmt getEvent = new SQLStmt("SELECT * FROM events_pk WHERE user_id = ? AND session_id = ?;");
     
-    public static final SQLStmt getTotals = new SQLStmt("SELECT total_value FROM events_totals WHERE user_id = ? AND session_id = ?;");
+    public static final SQLStmt getTotals = new SQLStmt("SELECT total_value FROM event_totals WHERE user_id = ? AND session_id = ?;");
 
     public static final SQLStmt recordEvent = new SQLStmt("INSERT INTO events_pk (user_id,session_id,insert_date) VALUES (?,?, ?);");
 
-    public static final SQLStmt upsertTotals = new SQLStmt("UPSERT INTO events_totals (user_id,session_id,last_written,event_value) VALUES (?,?,?,?);");
+    public static final SQLStmt upsertTotals = new SQLStmt("UPSERT INTO event_totals (user_id,session_id,last_written,total_value,stale_date) "
+            + "VALUES (?,?,?,?,DATEADD(SECOND,?,?));");
 
     public static final SQLStmt forwardToKafka = new SQLStmt("INSERT INTO unique_events (user_id,session_id,insert_date,event_value) VALUES (?,?,?,?);");
 
 
     // @formatter:on
+ 
+    /**
+     * How long it takes before a session is declared stale...
+     */
+    final static int STALE_SECONDS = 300;
 
     public VoltTable[] run(long userId, long sessionId, Date eventDate, long eventValue) throws VoltAbortException {
-
+        
         voltQueueSQL(getEvent, userId, sessionId);
         voltQueueSQL(getTotals, userId, sessionId);
 
@@ -66,7 +73,7 @@ public class SummarizeUniqueEvents extends VoltProcedure {
         voltQueueSQL(recordEvent, userId, sessionId, eventDate);
         
         if (updatedEventValue > 100) {
-            voltQueueSQL(upsertTotals, userId, sessionId, eventDate,0);
+            voltQueueSQL(upsertTotals, userId, sessionId, eventDate,0,STALE_SECONDS,eventDate);
             voltQueueSQL(forwardToKafka, userId, sessionId, eventDate,updatedEventValue);
         } else {
             voltQueueSQL(upsertTotals, userId, sessionId, eventDate,updatedEventValue);

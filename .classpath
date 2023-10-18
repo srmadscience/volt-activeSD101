@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="example1/java"/>
 	<classpathentry kind="src" path="example2"/>
 	<classpathentry kind="src" path="example3"/>
 	<classpathentry kind="src" path="example4"/>
+	<classpathentry kind="src" path="workloadGenerator"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
