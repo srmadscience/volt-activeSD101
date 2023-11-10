@@ -1,5 +1,10 @@
 
 --
+-- Delete existing tables if they are present
+--
+file remove_tables_example2.sql
+
+--
 -- This table is used to spot duplicate session records
 -- provided they arrive within a 5 minute window.
 --
@@ -24,10 +29,6 @@ PARTITION TABLE events_pk ON COLUMN user_id;
 CREATE INDEX event_pk_ttl ON events_pk(insert_date);
 
 
---
--- Delete existing tables if they are present
---
-file remove_tables_example2.sql
 
 --
 -- Records which are unique are forwarded using this stream.
