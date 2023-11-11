@@ -38,7 +38,6 @@ public class ForwardUniqueEvents extends VoltProcedure {
 
     public static final SQLStmt forwardToKafka = new SQLStmt("INSERT INTO unique_events (user_id,session_id,insert_date, event_value) VALUES (?,?,?,?);");
 
-
     // @formatter:on
 
     public VoltTable[] run(long user_id, long sessionId, Date eventDate, long value) throws VoltAbortException {
@@ -50,6 +49,7 @@ public class ForwardUniqueEvents extends VoltProcedure {
         // Sanity check: Does this session already exist?
         if (eventRecord[0].advanceRow()) {
             // It does. Ignore this record.
+            
             return new VoltTable[0];
         }
 
