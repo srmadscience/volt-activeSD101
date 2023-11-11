@@ -49,7 +49,7 @@ public class ForwardUniqueEvents extends VoltProcedure {
         // Sanity check: Does this session already exist?
         if (eventRecord[0].advanceRow()) {
             // It does. Ignore this record.
-            
+            System.out.println("u/s " +user_id + "/" +  sessionId + " found" );
             return new VoltTable[0];
         }
 
