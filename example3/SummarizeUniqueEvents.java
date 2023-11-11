@@ -61,8 +61,9 @@ public class SummarizeUniqueEvents extends VoltProcedure {
         
         long updatedEventValue = eventValue;
 
-        // Sanity check: Does this session exist?
-        if (!eventRecord[0].advanceRow()) {
+        // Sanity check: Does this session already exist?
+        if (eventRecord[0].advanceRow()) {
+            // It does. Ignore this record.
             return new VoltTable[0];
         }
 
