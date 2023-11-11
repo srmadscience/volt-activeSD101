@@ -1,4 +1,7 @@
 
+
+DROP PROCEDURE ForwardUniqueEvents IF EXISTS;
+
 DROP PROCEDURE SummarizeUniqueEvents IF EXISTS;
 
 DROP TABLE events_pk IF EXISTS;
