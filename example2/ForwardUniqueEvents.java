@@ -56,6 +56,8 @@ public class ForwardUniqueEvents extends VoltProcedure {
         voltQueueSQL(recordEvent, user_id, sessionId, eventDate,value);
         voltQueueSQL(forwardToKafka, user_id, sessionId, eventDate,value);
 
+        System.out.println("u/s " +user_id + "/" +  sessionId + " added" );
+        
         return voltExecuteSQL(true);
 
     }
