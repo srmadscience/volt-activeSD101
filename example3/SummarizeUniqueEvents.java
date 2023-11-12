@@ -58,7 +58,7 @@ public class SummarizeUniqueEvents extends VoltProcedure {
     /**
      * Send summary to Kafka
      */
-    public static final SQLStmt forwardToKafka = new SQLStmt("INSERT INTO summarized_events_by_user (user_id,insert_date,event_value) VALUES (?,?,?,?);");
+    public static final SQLStmt forwardToKafka = new SQLStmt("INSERT INTO summarized_events_by_user (user_id,insert_date,event_value) VALUES (?,?,?);");
 
 
     // @formatter:on
