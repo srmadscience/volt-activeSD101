@@ -4,7 +4,7 @@ DROP PROCEDURE ForwardUniqueEvents IF EXISTS;
 
 DROP PROCEDURE SummarizeUniqueEvents IF EXISTS;
 
-DROP VIEW oldest_20_view IF EXISTS;
+DROP PROCEDURE Oldest20 IF EXISTS;
 
 DROP VIEW running_totals_by_user_view IF EXISTS;
 

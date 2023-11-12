@@ -62,7 +62,7 @@ PARTITION TABLE user_totals ON COLUMN user_id;
 
 CREATE INDEX user_totals_ix1 ON user_totals(stale_date);
 
-CREATE VIEW oldest_20_view AS 
+CREATE PROCEDURE Oldest20 AS 
 select ut.user_id, ut.stale_date, ut.total_value buffered_value, uv.downstream_value 
 from user_totals ut
    , running_totals_by_user_view uv 
