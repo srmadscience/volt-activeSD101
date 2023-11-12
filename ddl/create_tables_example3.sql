@@ -67,7 +67,7 @@ select ut.user_id, ut.stale_date, ut.total_value buffered_value, uv.downstream_v
 from user_totals ut
    , running_totals_by_user_view uv 
 where ut.user_id = uv.user_id 
-order by ut.stale_date limit 20;
+order by ut.stale_date, ut.user_id limit 20;
 
 -- 
 -- The Java we run lives in this JAR file
