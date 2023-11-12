@@ -33,7 +33,7 @@ public class GenerateActiveSD101Workload {
             System.exit(1);
         }
 
-        final int maxUserid = 1000;
+        final int maxUserid = 100;
         final int maxSessionId = 1000000;
         final int maxValue = 100;
         final int dupFrequency = 5;
