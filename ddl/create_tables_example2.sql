@@ -13,7 +13,7 @@ CREATE TABLE events_pk
 ,session_id bigint not null
 ,insert_date timestamp default now not null
 ,primary key (user_id, session_id)) 
-USING TTL 5 MINUTES ON COLUMN insert_date;
+USING TTL 30 MINUTES ON COLUMN insert_date;
 
 --
 -- To make things scale we hash based on user_id and spread
