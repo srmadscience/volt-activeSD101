@@ -60,19 +60,6 @@ CREATE INDEX event_totals_ix1 ON event_totals(stale_date);
 -- 
 -- The Java we run lives in this JAR file
 --
-LOAD CLASSES ../jars/voltSD101-example2.jar;
-   
---
--- Tells Volt to look into the JARs it knows about and
--- create a PROCEDURE object from ForwardUniqueEvents.java.
---
-CREATE PROCEDURE  
-   PARTITION ON TABLE events_pk COLUMN user_id
-   FROM CLASS ForwardUniqueEvents;
-
--- 
--- The Java we run lives in this JAR file
---
 LOAD CLASSES ../jars/voltSD101-example3.jar;
    
 --
