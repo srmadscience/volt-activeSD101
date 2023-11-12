@@ -41,7 +41,7 @@ public class SummarizeUniqueEvents extends VoltProcedure {
     /**
      * Check running total for this userid
      */
-    public static final SQLStmt getTotals = new SQLStmt("SELECT total_value FROM event_totals WHERE user_id = ?;");
+    public static final SQLStmt getTotals = new SQLStmt("SELECT total_value FROM user_totals WHERE user_id = ?;");
 
     /**
      * Note this record so we can spot duplicates
@@ -52,7 +52,7 @@ public class SummarizeUniqueEvents extends VoltProcedure {
      * Upsert running total for a user/session. Note that we use DATEADD to set a 'stale date' some number of seconds 
      * in the future. @see <a href="https://docs.voltdb.com/UsingVoltDB/sqlfuncdateadd.php">DATEADD</a>
      */
-    public static final SQLStmt upsertTotals = new SQLStmt("UPSERT INTO event_totals (user_id,last_written,total_value,stale_date) "
+    public static final SQLStmt upsertTotals = new SQLStmt("UPSERT INTO user_totals (user_id,last_written,total_value,stale_date) "
             + "VALUES (?,?,?,DATEADD(SECOND,?,?));");
 
     /**

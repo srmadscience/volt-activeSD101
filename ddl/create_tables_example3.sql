@@ -40,10 +40,18 @@ EXPORT TO TOPIC unique_events_topic WITH KEY (user_id)
 ,insert_date timestamp default now not null
 ,event_value  bigint not null) ;
 
+--
+-- View to store totals per user
+--
+CREATE VIEW running_totals_by_user_view AS
+SELECT user_id, sum(event_value) event_value 
+FROM summarized_events_by_user
+GROUP BY user_id;
+
 -- 
 -- Table used for keeping track of running totals by user
 --
-CREATE TABLE event_totals 
+CREATE TABLE user_totals 
 (user_id bigint not null
 ,last_written timestamp default now not null
 ,total_value  bigint not null
