@@ -41,7 +41,7 @@ public class SummarizeUniqueEvents extends VoltProcedure {
     /**
      * Check running total for this userid
      */
-    public static final SQLStmt getTotals = new SQLStmt("SELECT total_value FROM summarized_events_by_user WHERE user_id = ?;");
+    public static final SQLStmt getTotals = new SQLStmt("SELECT total_value FROM event_totals WHERE user_id = ?;");
 
     /**
      * Note this record so we can spot duplicates
