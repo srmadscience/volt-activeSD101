@@ -77,7 +77,7 @@ public class SummarizeUniqueEvents extends VoltProcedure {
             voltQueueSQL(upsertTotals, userId, sessionId, eventDate,0,STALE_SECONDS,eventDate);
             voltQueueSQL(forwardToKafka, userId, sessionId, eventDate,updatedEventValue);
         } else {
-            voltQueueSQL(upsertTotals, userId, sessionId, eventDate,updatedEventValue);
+            voltQueueSQL(upsertTotals, userId, sessionId, eventDate,updatedEventValue,STALE_SECONDS,eventDate);
         }
  
         return voltExecuteSQL(true);
