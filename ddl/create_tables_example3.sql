@@ -58,9 +58,9 @@ CREATE TABLE user_totals
 ,stale_date  timestamp
 ,primary key (user_id));
 
-PARTITION TABLE event_totals ON COLUMN user_id;
+PARTITION TABLE user_totals ON COLUMN user_id;
 
-CREATE INDEX event_totals_ix1 ON event_totals(stale_date);
+CREATE INDEX user_totals_ix1 ON user_totals(stale_date);
 
 
 -- 
