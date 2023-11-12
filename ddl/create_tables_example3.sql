@@ -33,24 +33,22 @@ CREATE INDEX event_pk_ttl ON events_pk(insert_date);
 -- Records which are unique are forwarded using this stream.
 -- A Stream is like a table, but you can only INSERT into it.
 --
-CREATE STREAM unique_events
+CREATE STREAM summarized_events_by_user
 PARTITION ON COLUMN user_id
 EXPORT TO TOPIC unique_events_topic WITH KEY (user_id)
 (user_id bigint not null
-,session_id bigint not null
 ,insert_date timestamp default now not null
 ,event_value  bigint not null) ;
 
 -- 
--- Table used for keeping track of running totals
+-- Table used for keeping track of running totals by user
 --
 CREATE TABLE event_totals 
 (user_id bigint not null
-,session_id bigint not null
 ,last_written timestamp default now not null
 ,total_value  bigint not null
 ,stale_date  timestamp
-,primary key (user_id, session_id));
+,primary key (user_id));
 
 PARTITION TABLE event_totals ON COLUMN user_id;
 

@@ -38,18 +38,27 @@ public class SummarizeUniqueEvents extends VoltProcedure {
      */
     public static final SQLStmt getEvent = new SQLStmt("SELECT * FROM events_pk WHERE user_id = ? AND session_id = ?;");
     
-    public static final SQLStmt getTotals = new SQLStmt("SELECT total_value FROM event_totals WHERE user_id = ? AND session_id = ?;");
+    /**
+     * Check running total for this userid
+     */
+    public static final SQLStmt getTotals = new SQLStmt("SELECT total_value FROM summarized_events_by_user WHERE user_id = ?;");
 
+    /**
+     * Note this record so we can spot duplicates
+     */
     public static final SQLStmt recordEvent = new SQLStmt("INSERT INTO events_pk (user_id,session_id,insert_date) VALUES (?,?, ?);");
 
     /**
      * Upsert running total for a user/session. Note that we use DATEADD to set a 'stale date' some number of seconds 
      * in the future. @see <a href="https://docs.voltdb.com/UsingVoltDB/sqlfuncdateadd.php">DATEADD</a>
      */
-    public static final SQLStmt upsertTotals = new SQLStmt("UPSERT INTO event_totals (user_id,session_id,last_written,total_value,stale_date) "
-            + "VALUES (?,?,?,?,DATEADD(SECOND,?,?));");
+    public static final SQLStmt upsertTotals = new SQLStmt("UPSERT INTO event_totals (user_id,last_written,total_value,stale_date) "
+            + "VALUES (?,?,?,DATEADD(SECOND,?,?));");
 
-    public static final SQLStmt forwardToKafka = new SQLStmt("INSERT INTO unique_events (user_id,session_id,insert_date,event_value) VALUES (?,?,?,?);");
+    /**
+     * Send summary to Kafka
+     */
+    public static final SQLStmt forwardToKafka = new SQLStmt("INSERT INTO summarized_events_by_user (user_id,insert_date,event_value) VALUES (?,?,?,?);");
 
 
     // @formatter:on
@@ -62,7 +71,7 @@ public class SummarizeUniqueEvents extends VoltProcedure {
     public VoltTable[] run(long userId, long sessionId, Date eventDate, long eventValue) throws VoltAbortException {
         
         voltQueueSQL(getEvent, userId, sessionId);
-        voltQueueSQL(getTotals, userId, sessionId);
+        voltQueueSQL(getTotals, userId);
 
         VoltTable[] eventRecord = voltExecuteSQL();
         
@@ -82,10 +91,10 @@ public class SummarizeUniqueEvents extends VoltProcedure {
         
         if (updatedEventValue > 100) {
             // Reset our running total to zero...
-            voltQueueSQL(upsertTotals, userId, sessionId, eventDate,0,STALE_SECONDS,eventDate);
-            voltQueueSQL(forwardToKafka, userId, sessionId, eventDate,updatedEventValue);
+            voltQueueSQL(upsertTotals, userId, eventDate,0,STALE_SECONDS,eventDate);
+            voltQueueSQL(forwardToKafka, userId,eventDate,updatedEventValue);
         } else {
-            voltQueueSQL(upsertTotals, userId, sessionId, eventDate,updatedEventValue,STALE_SECONDS,eventDate);
+            voltQueueSQL(upsertTotals, userId, eventDate,updatedEventValue,STALE_SECONDS,eventDate);
         }
  
         return voltExecuteSQL(true);
