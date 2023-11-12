@@ -63,7 +63,7 @@ PARTITION TABLE user_totals ON COLUMN user_id;
 CREATE INDEX user_totals_ix1 ON user_totals(stale_date);
 
 CREATE VIEW oldest_20_view AS 
-select ut.user_id, ut.stale_date, ut.total_value buffer_values, uv.event_value 
+select ut.user_id, ut.stale_date, ut.total_value buffered_value, uv.downstream_value 
 from user_totals ut
    , running_totals_by_user_view uv 
 where ut.user_id = uv.user_id 
