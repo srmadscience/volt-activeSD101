@@ -44,7 +44,7 @@ EXPORT TO TOPIC unique_events_topic WITH KEY (user_id)
 -- View to store totals per user
 --
 CREATE VIEW running_totals_by_user_view AS
-SELECT user_id, sum(event_value) event_value 
+SELECT user_id, sum(event_value) downstream_value 
 FROM summarized_events_by_user
 GROUP BY user_id;
 
@@ -62,6 +62,12 @@ PARTITION TABLE user_totals ON COLUMN user_id;
 
 CREATE INDEX user_totals_ix1 ON user_totals(stale_date);
 
+CREATE VIEW oldest_20_view AS 
+select ut.user_id, ut.stale_date, ut.total_value buffer_values, uv.event_value 
+from user_totals ut
+   , running_totals_by_user_view uv 
+where ut.user_id = uv.user_id 
+order by ut.stale_date limit 20;
 
 -- 
 -- The Java we run lives in this JAR file
