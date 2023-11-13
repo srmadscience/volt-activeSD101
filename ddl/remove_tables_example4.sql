@@ -11,3 +11,6 @@ DROP TABLE event_totals IF EXISTS;
 
 DROP STREAM unique_events IF EXISTS;
 
+file remove_tables_example3.sql
+
+
