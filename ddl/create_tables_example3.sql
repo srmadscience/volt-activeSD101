@@ -45,9 +45,9 @@ EXPORT TO TOPIC unique_events_topic WITH KEY (user_id)
 -- View to store totals per user
 --
 CREATE VIEW running_totals_by_user_view AS
-SELECT user_id, sum(event_value) downstream_value 
+SELECT user_id, reason, sum(event_value) downstream_value 
 FROM summarized_events_by_user
-GROUP BY user_id;
+GROUP BY user_id,reason;
 
 -- 
 -- Table used for keeping track of running totals by user
