@@ -63,12 +63,7 @@ PARTITION TABLE user_totals ON COLUMN user_id;
 
 CREATE INDEX user_totals_ix1 ON user_totals(stale_date);
 
-CREATE PROCEDURE Oldest20 AS 
-select ut.user_id, ut.stale_date, ut.total_value buffered_value, uv.downstream_value 
-from user_totals ut
-   , running_totals_by_user_view uv 
-where ut.user_id = uv.user_id 
-order by ut.stale_date, ut.user_id limit 20;
+
 
 -- 
 -- The Java we run lives in this JAR file
@@ -83,3 +78,9 @@ CREATE PROCEDURE
    PARTITION ON TABLE events_pk COLUMN user_id
    FROM CLASS SummarizeUniqueEvents;
 
+CREATE PROCEDURE Oldest20 AS 
+select ut.user_id, ut.stale_date, ut.total_value buffered_value, uv.downstream_value 
+from user_totals ut
+   , running_totals_by_user_view uv 
+where ut.user_id = uv.user_id 
+order by ut.stale_date, ut.user_id limit 20;

@@ -37,7 +37,7 @@ public class SummarizeUniqueEvents extends VoltProcedure {
      * See if we know about an event already
      */
     public static final SQLStmt getEvent = new SQLStmt("SELECT * FROM events_pk WHERE user_id = ? AND session_id = ?;");
-    
+
     /**
      * Check running total for this userid
      */
@@ -49,7 +49,7 @@ public class SummarizeUniqueEvents extends VoltProcedure {
     public static final SQLStmt recordEvent = new SQLStmt("INSERT INTO events_pk (user_id,session_id,insert_date) VALUES (?,?, ?);");
 
     /**
-     * Upsert running total for a user/session. Note that we use DATEADD to set a 'stale date' some number of seconds 
+     * Upsert running total for a user/session. Note that we use DATEADD to set a 'stale date' some number of seconds
      * in the future. @see <a href="https://docs.voltdb.com/UsingVoltDB/sqlfuncdateadd.php">DATEADD</a>
      */
     public static final SQLStmt upsertTotals = new SQLStmt("UPSERT INTO user_totals (user_id,last_written,total_value,stale_date) "
@@ -62,19 +62,19 @@ public class SummarizeUniqueEvents extends VoltProcedure {
 
 
     // @formatter:on
- 
+
     /**
      * How long it takes before a session is declared stale...
      */
     final static int STALE_SECONDS = 300;
 
     public VoltTable[] run(long userId, long sessionId, Date eventDate, long eventValue) throws VoltAbortException {
-        
+
         voltQueueSQL(getEvent, userId, sessionId);
         voltQueueSQL(getTotals, userId);
 
         VoltTable[] eventRecord = voltExecuteSQL();
-        
+
         long updatedEventValue = eventValue;
 
         // Sanity check: Does this session already exist?
@@ -88,7 +88,7 @@ public class SummarizeUniqueEvents extends VoltProcedure {
         }
 
         voltQueueSQL(recordEvent, userId, sessionId, eventDate);
-        
+
         if (updatedEventValue > 100) {
             // Reset our running total to zero...
             voltQueueSQL(upsertTotals, userId, eventDate,0,STALE_SECONDS,eventDate);
@@ -96,7 +96,7 @@ public class SummarizeUniqueEvents extends VoltProcedure {
         } else {
             voltQueueSQL(upsertTotals, userId, eventDate,updatedEventValue,STALE_SECONDS,eventDate);
         }
- 
+
         return voltExecuteSQL(true);
 
     }

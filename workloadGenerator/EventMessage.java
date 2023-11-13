@@ -76,7 +76,7 @@ public class EventMessage {
         return builder.toString();
     }
 
-   
+
     /**
      * @return the userid
      */
@@ -84,5 +84,5 @@ public class EventMessage {
         return userid;
     }
 
-   
+
 }

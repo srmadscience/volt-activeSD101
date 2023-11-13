@@ -7,3 +7,5 @@ DROP PROCEDURE SummarizeStaleEvents IF EXISTS;
 
 
 
+
+

@@ -5,16 +5,7 @@
 --
 file remove_tables_example4.sql
 
-
 LOAD CLASSES ../jars/voltSD101-example4.jar;
-   
---
--- Tells Volt to look into the JARs it knows about and
--- create a PROCEDURE object from ForwardUniqueEvents.java.
---
-CREATE PROCEDURE  
-   PARTITION ON TABLE events_pk COLUMN user_id
-   FROM CLASS SummarizeUniqueEvents;
 
 CREATE PROCEDURE DIRECTED
    FROM CLASS SummarizeStaleEvents;  
