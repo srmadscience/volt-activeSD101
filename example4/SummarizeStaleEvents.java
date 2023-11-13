@@ -35,14 +35,14 @@ public class SummarizeStaleEvents extends VoltProcedure {
 
     public static final SQLStmt getOldestStaleSession = new SQLStmt("SELECT MIN(stale_date) stale_date FROM event_totals;");
     
-    public static final SQLStmt exportStaleSessions = new SQLStmt("INSERT INTO unique_events "
-            + "(user_id,session_id,insert_date,event_value) "
-            + "SELECT user_id,session_id, last_written, total_value "
-            + "FROM event_totals "
+    public static final SQLStmt exportStaleSessions = new SQLStmt("INSERT INTO summarized_events_by_user "
+            + " (user_id,insert_date,event_value) "
+            + "SELECT user_id, last_written, total_value "
+            + "FROM user_totals "
             + "WHERE stale_date = ?"
-            + "ORDER BY user_id, session_id;");
+            + "ORDER BY user_id;");
 
-    public static final SQLStmt updateStaleSessionTotals = new SQLStmt("UPDATE event_totals "
+    public static final SQLStmt updateStaleSessionTotals = new SQLStmt("UPDATE user_totals "
             + "SET total_value = 0 "
             + "  , stale_date = null "
             + "WHERE stale_date = ?;");
