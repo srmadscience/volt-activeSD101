@@ -38,7 +38,8 @@ PARTITION ON COLUMN user_id
 EXPORT TO TOPIC unique_events_topic WITH KEY (user_id)
 (user_id bigint not null
 ,insert_date timestamp default now not null
-,event_value  bigint not null) ;
+,event_value  bigint not null
+,reason varchar(1) default 'Q') ;
 
 --
 -- View to store totals per user

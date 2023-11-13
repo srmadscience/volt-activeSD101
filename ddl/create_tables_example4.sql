@@ -1,5 +1,11 @@
 
 
+--
+-- Delete existing tables if they are present
+--
+file remove_tables_example4.sql
+
+
 LOAD CLASSES ../jars/voltSD101-example4.jar;
    
 --
@@ -10,12 +16,11 @@ CREATE PROCEDURE
    PARTITION ON TABLE events_pk COLUMN user_id
    FROM CLASS SummarizeUniqueEvents;
 
-
 CREATE PROCEDURE DIRECTED
    FROM CLASS SummarizeStaleEvents;  
    
 CREATE TASK SummarizeStaleEventsTask
-ON SCHEDULE  EVERY 1 SECONDS
+ON SCHEDULE EVERY 10 SECONDS
 PROCEDURE SummarizeStaleEvents
 ON ERROR LOG 
 RUN ON PARTITIONS;
