@@ -22,8 +22,6 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import java.util.Date;
-
 import org.voltdb.SQLStmt;
 import org.voltdb.VoltProcedure;
 import org.voltdb.VoltTable;
@@ -33,8 +31,8 @@ public class SummarizeStaleEvents extends VoltProcedure {
 
   // @formatter:off
 
-    public static final SQLStmt getOldestStaleSession = new SQLStmt("SELECT MIN(stale_date) stale_date FROM event_totals;");
-    
+    public static final SQLStmt getOldestStaleSession = new SQLStmt("SELECT MIN(stale_date) stale_date FROM user_totals;");
+
     public static final SQLStmt exportStaleSessions = new SQLStmt("INSERT INTO summarized_events_by_user "
             + " (user_id,insert_date,event_value) "
             + "SELECT user_id, last_written, total_value "
