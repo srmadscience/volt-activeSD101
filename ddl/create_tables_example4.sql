@@ -5,6 +5,12 @@
 --
 file remove_tables_example4.sql
 
+--
+-- Put example three back to start
+--
+file create_tables_example3.sql
+
+
 LOAD CLASSES ../jars/voltSD101-example4.jar;
 
 CREATE PROCEDURE DIRECTED
