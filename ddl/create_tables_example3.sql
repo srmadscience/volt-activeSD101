@@ -35,7 +35,7 @@ CREATE INDEX event_pk_ttl ON events_pk(insert_date);
 --
 CREATE STREAM summarized_events_by_user
 PARTITION ON COLUMN user_id
-EXPORT TO TOPIC unique_events_topic WITH KEY (user_id)
+EXPORT TO TOPIC summary_events_topic WITH KEY (user_id)
 (user_id bigint not null
 ,insert_date timestamp default now not null
 ,event_value  bigint not null
